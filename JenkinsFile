@@ -4,10 +4,9 @@ pipeline {
     environment {
         // Define environment variables
         APP_NAME = "node-express-server-rest-api"
-        APP_PORT = "3000" // Port from your README.md
         DEPLOY_DIR = "/var/www/${APP_NAME}"
-        GITHUB_REPO = "https://github.com/saikrupaelate/CICD-NodeJS-RestAPI" // Replace with your repo URL
-        BRANCH = "main" // Replace with your target branch
+        GITHUB_REPO = "https://github.com/saikrupaelate/CICD-NodeJS-RestAPI.git"
+        BRANCH = "main" 
     }
 
     stages {
@@ -31,7 +30,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo "Running tests..."
-                sh 'npm test' // This will just echo "No test specified" as per your package.json
+                sh 'npm test' 
             }
         }
 
