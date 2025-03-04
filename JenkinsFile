@@ -62,7 +62,7 @@ pipeline {
                 sh "cp -r . ${DEPLOY_DIR}/"
 
                 // Manually copy the .env file (if not in the repository)
-		sh "cp /path/to/.env ${DEPLOY_DIR}/.env"
+		// sh "cp /path/to/.env ${DEPLOY_DIR}/.env"
 
 	 	// Install production dependencies
                 sh """
