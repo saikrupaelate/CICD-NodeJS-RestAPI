@@ -1,0 +1,92 @@
+pipeline {
+    agent any
+
+    environment {
+        // Define environment variables
+        APP_NAME = "node-express-server-rest-api"
+        APP_PORT = "3000" // Port from your README.md
+        DEPLOY_DIR = "/var/www/${APP_NAME}"
+        GITHUB_REPO = "https://github.com/saikrupaelate/CICD-NodeJS-RestAPI" // Replace with your repo URL
+        BRANCH = "main" // Replace with your target branch
+    }
+
+    stages {
+        // Stage 1: Checkout code from GitHub
+        stage('Checkout') {
+            steps {
+                echo "Checking out code from GitHub..."
+                git branch: "${BRANCH}", url: "${GITHUB_REPO}"
+            }
+        }
+
+        // Stage 2: Install dependencies
+        stage('Install Dependencies') {
+            steps {
+                echo "Installing Node.js dependencies..."
+                sh 'npm install'
+            }
+        }
+
+        // Stage 3: Run tests (optional, since no tests are defined)
+        stage('Run Tests') {
+            steps {
+                echo "Running tests..."
+                sh 'npm test' // This will just echo "No test specified" as per your package.json
+            }
+        }
+
+        // Stage 4: Build the application (not needed for this app)
+        stage('Build') {
+            steps {
+                echo "No build step required for this application."
+            }
+        }
+
+        // Stage 5: Deploy the application
+        stage('Deploy') {
+            steps {
+                echo "Deploying the application..."
+
+                // Stop the existing application (if running)
+                sh '''
+                    if pm2 list | grep -q "${APP_NAME}"; then
+                        pm2 stop ${APP_NAME}
+                        pm2 delete ${APP_NAME}
+                    fi
+                '''
+
+                // Remove old deployment files
+                sh "rm -rf ${DEPLOY_DIR}/*"
+
+                // Copy new build artifacts to the deployment directory
+                sh "cp -r . ${DEPLOY_DIR}/"
+
+                // Manually copy the .env file (if not in the repository)
+		sh "cp /path/to/.env ${DEPLOY_DIR}/.env"
+
+	 	// Install production dependencies
+                sh """
+                    cd ${DEPLOY_DIR}
+                    npm install --production
+                """
+
+                // Start the application using PM2
+                sh """
+                    cd ${DEPLOY_DIR}
+                    pm2 start npm --name "${APP_NAME}" -- start
+                """
+
+                echo "Application deployed successfully!"
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline succeeded! Application is live."
+        }
+        failure {
+            echo "Pipeline failed. Check the logs for errors."
+        }
+    }
+}
