@@ -54,35 +54,14 @@ pipeline {
             steps {
                 echo "Deploying the application..."
 
-                // Stop the existing application (if running)
-                sh '''
-                    if pm2 list | grep -q "${APP_NAME}"; then
-                        pm2 stop ${APP_NAME}
-                        pm2 delete ${APP_NAME}
-                    fi
-                '''
-
-                // Remove old deployment files
-                sh "rm -rf ${DEPLOY_DIR}/*"
-
-                // Copy new build artifacts to the deployment directory
-                sh "cp -r . ${DEPLOY_DIR}/"
-
-                // Manually copy the .env file (if not in the repository)
-		// sh "cp /path/to/.env ${DEPLOY_DIR}/.env"
-
-	 	// Install production dependencies
                 sh """
+                    sudo mkdir -p ${DEPLOY_DIR}
+                    sudo rm -rf ${DEPLOY_DIR}/*
+                    sudo cp -r . ${DEPLOY_DIR}/
                     cd ${DEPLOY_DIR}
-                    npm install --production
+                    sudo npm install --production
+                    sudo pm2 start npm --name "${APP_NAME}" -- start
                 """
-
-                // Start the application using PM2
-                sh """
-                    cd ${DEPLOY_DIR}
-                    pm2 start npm --name "${APP_NAME}" -- start
-                """
-
                 echo "Application deployed successfully!"
             }
         }
