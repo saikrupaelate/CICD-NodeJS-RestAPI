@@ -10,6 +10,14 @@ pipeline {
     }
 
     stages {
+
+	stage('Check User') {
+            steps {
+                echo "Checking the user running the pipeline..."
+                sh 'whoami'
+            }
+        }
+
         // Stage 1: Checkout code from GitHub
         stage('Checkout') {
             steps {
