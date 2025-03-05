@@ -6,12 +6,11 @@ pipeline {
         APP_NAME = "node-express-server-rest-api"
         DEPLOY_DIR = "/var/www/${APP_NAME}"
         GITHUB_REPO = "https://github.com/saikrupaelate/CICD-NodeJS-RestAPI.git"
-        BRANCH = "main" 
+        BRANCH = "main"
     }
 
     stages {
-
-	stage('Check User') {
+        stage('Check User') {
             steps {
                 echo "Checking the user running the pipeline..."
                 sh 'whoami'
@@ -38,14 +37,15 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo "Running tests..."
-                sh 'npm test' 
+                sh 'npm test'
             }
         }
 
-        // Stage 4: Build the application (not needed for this app)
+        // Stage 4: Build the application
         stage('Build') {
             steps {
-                echo "No build step required for this application."
+                echo "Building the application..."
+                sh 'npm run build' // Transpile the code using Babel
             }
         }
 
