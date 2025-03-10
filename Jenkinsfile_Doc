@@ -41,8 +41,8 @@ pipeline {
                         sudo usermod -aG docker jenkins
 
                         # Restart Jenkins to apply group changes
-                        echo "Restarting Jenkins..."
-                        sudo systemctl restart jenkins
+                        # echo "Restarting Jenkins..."
+                        # sudo systemctl restart jenkins
                     else
                         echo "Docker is already installed."
                     fi
